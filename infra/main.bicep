@@ -6,6 +6,7 @@ param appServicePlanName string
 param webAppName string
 param dockerRegistryUrl string
 param dockerRegistryUsername string
+@secure()
 param dockerRegistryPassword string
 
 module acrModule 'modules/acr.bicep' = {
@@ -37,6 +38,7 @@ module webAppModule 'modules/webApp.bicep' = {
   params: {
     name: webAppName
     location: location
+    kind: 'app,linux,container'
     serverFarmResourceId: resourceId('Microsoft.Web/serverfarms', appServicePlanName)
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${containerRegistryImageName}:${containerRegistryImageVersion}'
