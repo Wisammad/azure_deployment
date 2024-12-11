@@ -1,11 +1,9 @@
-name: Deploy Container App
+name: Deploy Infrastructure and Application
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'app/**'
 
 env:
   REGISTRY_NAME: acrwisamm2024
@@ -17,7 +15,31 @@ env:
   KEY_VAULT_SECRET_NAME_ACR_PASSWORD: acr-password1
 
 jobs:
-  build-and-deploy:
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Install Azure CLI
+      run: |
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+    - name: Deploy Infrastructure
+      run: |
+        az bicep install
+        az deployment group create \
+          --resource-group ${{ env.RESOURCE_GROUP }} \
+          --template-file infra/main.bicep \
+          --parameters @infra/parameters.json
+
+  deploy-application:
+    needs: deploy-infrastructure
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -58,4 +80,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.APP_NAME }}
-          images: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.image-version.outputs.version }}
+          images: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.image-version.outputs.version }} 
