@@ -38,6 +38,11 @@ jobs:
           --template-file infra/main.bicep \
           --parameters @infra/parameters.json
 
+    - name: Verify Key Vault Access
+      run: |
+        az keyvault show --name ${{ env.KEY_VAULT_NAME }} --resource-group ${{ env.RESOURCE_GROUP }}
+        az keyvault secret list --vault-name ${{ env.KEY_VAULT_NAME }}
+
   deploy-application:
     needs: deploy-infrastructure
     runs-on: ubuntu-latest
@@ -51,11 +56,11 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Get docker registry credentials from Key Vault
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            echo "REGISTRY_USERNAME=$(az keyvault secret show --name ${{ env.KEY_VAULT_SECRET_NAME_ACR_USERNAME }} --vault-name ${{ env.KEY_VAULT_NAME }} --query value -o tsv)" >> $GITHUB_ENV
-            echo "REGISTRY_PASSWORD=$(az keyvault secret show --name ${{ env.KEY_VAULT_SECRET_NAME_ACR_PASSWORD }} --vault-name ${{ env.KEY_VAULT_NAME }} --query value -o tsv)" >> $GITHUB_ENV
+        run: |
+          REGISTRY_USERNAME=$(az keyvault secret show --name ${{ env.KEY_VAULT_SECRET_NAME_ACR_USERNAME }} --vault-name ${{ env.KEY_VAULT_NAME }} --query value -o tsv)
+          REGISTRY_PASSWORD=$(az keyvault secret show --name ${{ env.KEY_VAULT_SECRET_NAME_ACR_PASSWORD }} --vault-name ${{ env.KEY_VAULT_NAME }} --query value -o tsv)
+          echo "REGISTRY_USERNAME=${REGISTRY_USERNAME}" >> $GITHUB_ENV
+          echo "REGISTRY_PASSWORD=${REGISTRY_PASSWORD}" >> $GITHUB_ENV
 
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1

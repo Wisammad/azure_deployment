@@ -13,7 +13,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
     accessPolicies: [
       {
         tenantId: subscription().tenantId
-        objectId: 'c52bb0cc-7f22-4c28-aee8-264d1cafbb06' // Service Principal ID
+        objectId: '37841ca3-42b3-4aed-b215-44d6f5dcb57d' // Your actual Service Principal ID
         permissions: {
           secrets: [
             'get'
@@ -31,3 +31,4 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
 
 output keyVaultId string = keyVault.id
 output keyVaultName string = keyVault.name 
+`
