@@ -28,6 +28,9 @@
     },
     "containerRegistryImageVersion": {
       "value": "latest"
+    },
+    "keyVaultName": {
+      "value": "kv-wisamm-2024"
     }
   }
 }

@@ -8,6 +8,16 @@ param dockerRegistryUrl string
 param dockerRegistryUsername string
 @secure()
 param dockerRegistryPassword string
+param keyVaultName string
+
+module keyVaultModule 'modules/keyVault.bicep' = {
+  name: 'deployKeyVault'
+  params: {
+    name: keyVaultName
+    location: location
+    enableVaultForDeployment: true
+  }
+}
 
 module acrModule 'modules/acr.bicep' = {
   name: 'deployAcr'
@@ -15,7 +25,14 @@ module acrModule 'modules/acr.bicep' = {
     name: containerRegistryName
     location: location
     acrAdminUserEnabled: true
+    adminCredentialsKeyVaultResourceId: keyVaultModule.outputs.keyVaultId
+    adminCredentialsKeyVaultSecretUserName: 'acr-username'
+    adminCredentialsKeyVaultSecretUserPassword1: 'acr-password1'
+    adminCredentialsKeyVaultSecretUserPassword2: 'acr-password2'
   }
+  dependsOn: [
+    keyVaultModule
+  ]
 }
 
 module appServicePlanModule 'modules/appServicePlan.bicep' = {
