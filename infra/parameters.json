@@ -6,25 +6,25 @@
       "value": "spaincentral"
     },
     "containerRegistryName": {
-      "value": "yourAcrName"
+      "value": "acrwisamm2024"
     },
     "appServicePlanName": {
-      "value": "yourAppServicePlanName"
+      "value": "asp-wisamm-2024"
     },
     "webAppName": {
-      "value": "yourWebAppName"
+      "value": "app-wisamm-2024"
     },
     "dockerRegistryUrl": {
-      "value": "https://yourAcrName.azurecr.io"
+      "value": "https://acrwisamm2024.azurecr.io"
     },
     "dockerRegistryUsername": {
-      "value": "yourAcrName"
+      "value": "acrwisamm2024"
     },
     "dockerRegistryPassword": {
       "value": "yourAcrPassword"
     },
     "containerRegistryImageName": {
-      "value": "yourImageName"
+      "value": "pythonapp"
     },
     "containerRegistryImageVersion": {
       "value": "latest"
