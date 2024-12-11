@@ -28,6 +28,6 @@ jobs:
         ls -la
         ls -la infra/
         az deployment group create \
-          --resource-group aguadamillas_students_1 \
+          --resource-group BCSAI2024-DEVOPS-STUDENTS-B-DEV \
           --template-file infra/main.bicep \
           --parameters @infra/parameters.json
