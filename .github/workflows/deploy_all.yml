@@ -20,6 +20,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        submodules: true
 
     - name: Login to Azure
       uses: azure/login@v1
@@ -44,14 +46,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@main
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Debug directory structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Root directory contents:"
+          ls -la
+          echo "App directory contents:"
+          ls -la app/
+          echo "App files:"
+          find app/ -type f
 
       - name: Azure login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Get docker registry credentials from Key Vault
+      - name: Get docker registry credentials
         run: |
           REGISTRY_USERNAME=$(az keyvault secret show --name ${{ env.KEY_VAULT_SECRET_NAME_ACR_USERNAME }} --vault-name ${{ env.KEY_VAULT_NAME }} --query value -o tsv)
           REGISTRY_PASSWORD=$(az keyvault secret show --name ${{ env.KEY_VAULT_SECRET_NAME_ACR_PASSWORD }} --vault-name ${{ env.KEY_VAULT_NAME }} --query value -o tsv)
@@ -73,21 +88,14 @@ jobs:
         run: |
           cd app
           ls -la
+          if [ ! -f Dockerfile ]; then
+            echo "Error: Dockerfile not found in app directory"
+            exit 1
+          fi
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.image-version.outputs.version }}
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.image-version.outputs.version }}
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
-
-      - name: Debug directory structure
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "\nDirectory contents:"
-          ls -la
-          echo "\nApp directory contents:"
-          ls -la app/
-          echo "\nComplete directory tree:"
-          tree
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
