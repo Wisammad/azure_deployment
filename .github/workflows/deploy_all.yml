@@ -71,7 +71,6 @@ jobs:
 
       - name: Build and push image
         run: |
-          cd ..
           cd app
           ls -la
           docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.image-version.outputs.version }}
