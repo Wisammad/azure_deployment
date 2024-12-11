@@ -78,6 +78,17 @@ jobs:
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ steps.image-version.outputs.version }}
           docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:latest
 
+      - name: Debug directory structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "\nDirectory contents:"
+          ls -la
+          echo "\nApp directory contents:"
+          ls -la app/
+          echo "\nComplete directory tree:"
+          tree
+
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
