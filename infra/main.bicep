@@ -39,7 +39,7 @@ module webAppModule 'modules/webApp.bicep' = {
     name: webAppName
     location: location
     kind: 'app,linux,container'
-    serverFarmResourceId: resourceId('Microsoft.Web/serverfarms', appServicePlanName)
+    serverFarmResourceId: appServicePlanModule.outputs.id
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${containerRegistryImageName}:${containerRegistryImageVersion}'
       appCommandLine: ''
@@ -51,4 +51,7 @@ module webAppModule 'modules/webApp.bicep' = {
       DOCKER_REGISTRY_SERVER_PASSWORD: dockerRegistryPassword
     }
   }
+  dependsOn: [
+    appServicePlanModule
+  ]
 }
