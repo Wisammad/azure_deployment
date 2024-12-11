@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "containerRegistryName": {
+      "value": "yourAcrName"
+    },
+    "containerRegistryImageName": {
+      "value": "yourContainerRegistryImageName"
+    },
+    "containerRegistryImageVersion": {
+      "value": "yourContainerRegistryImageVersion"
+    },
+    "location": {
+      "value": "yourLocation"
+    },
+    "appServicePlanName": {
+      "value": "yourAppServicePlanName"
+    },
+    "webAppName": {
+      "value": "yourWebAppName"
+    },
+    "dockerRegistryUrl": {
+      "value": "https://yourAcrName.azurecr.io"
+    },
+    "dockerRegistryUsername": {
+      "value": "yourDockerRegistryUsername"
+    },
+    "dockerRegistryPassword": {
+      "value": "yourDockerRegistryPassword"
+    }
+  }
+}

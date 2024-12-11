@@ -4,7 +4,9 @@ param containerRegistryImageVersion string
 param location string
 param appServicePlanName string
 param webAppName string
-param appSettingsKeyValuePairs object
+param dockerRegistryUrl string
+param dockerRegistryUsername string
+param dockerRegistryPassword string
 
 module acrModule 'modules/acr.bicep' = {
   name: 'deployAcr'
@@ -27,8 +29,6 @@ module appServicePlanModule 'modules/appServicePlan.bicep' = {
       size: 'B1'
       tier: 'Basic'
     }
-    kind: 'Linux'
-    reserved: true
   }
 }
 
@@ -37,7 +37,6 @@ module webAppModule 'modules/webApp.bicep' = {
   params: {
     name: webAppName
     location: location
-    kind: 'app'
     serverFarmResourceId: resourceId('Microsoft.Web/serverfarms', appServicePlanName)
     siteConfig: {
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${containerRegistryImageName}:${containerRegistryImageVersion}'
