@@ -29,5 +29,5 @@ jobs:
         ls -la infra/
         az deployment group create \
           --resource-group aguadamillas_students_1 \
-          --template-file ./infra/main.bicep \
-          --parameters @./infra/parameters.json
+          --template-file main.bicep \
+          --parameters @parameters.json
